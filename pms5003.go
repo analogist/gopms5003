@@ -65,31 +65,52 @@ func read_uint16(data []byte) (uint16) {
     return binary.BigEndian.Uint16(data)
 }
 
-func ComputeAQI(pm25 uint16) (aqi uint16) {
+func ComputeAQI(pmbyte uint16) (aqi uint16) {
     var pmmin, pmmax, aqimin, aqimax float64
+    pm25 := float64(pmbyte)
     switch {
-    case pm25 >= 0 && pm25 < 51:
+    case pm25 <= 12:
         pmmin = 0
-        pmmax = 15.5
+        pmmax = 12
         aqimin = 0
-        aqimax = 51
-    case pm25 >= 51 && pm25 < 101:
-        pmmin = 15.5
-        pmmax = 40.5
-        aqimin = 51
-        aqimax = 101
-    case pm25 >= 101 && pm25 < 151:
-        pmmin = 40.5
-        pmmax = 65.5
-        aqimin = 101
-        aqimax = 151
-    case pm25 >= 151 && pm25 < 201:
-        pmmin = 65.5
-        pmmax = 150.5
-        aqimin = 151
-        aqimax = 201
+        aqimax = 50
+    case pm25 > 12 && pm25 <= 35.4:
+        pmmin = 12
+        pmmax = 35.4
+        aqimin = 50
+        aqimax = 100
+    case pm25 > 35.4 && pm25 <= 55.4:
+        pmmin = 35.4
+        pmmax = 55.4
+        aqimin = 100
+        aqimax = 150
+    case pm25 > 55.4 && pm25 <= 150.4:
+        pmmin = 55.4
+        pmmax = 150.4
+        aqimin = 150
+        aqimax = 200
+    case pm25 > 150.4 && pm25 <= 250.4:
+        pmmin = 150.4
+        pmmax = 250.4
+        aqimin = 200
+        aqimax = 300
+    case pm25 > 250.4 && pm25 <= 350.4:
+        pmmin = 250.4
+        pmmax = 350.4
+        aqimin = 300
+        aqimax = 400
+    case pm25 > 350.4 && pm25 <= 500.4:
+        pmmin = 350.4
+        pmmax = 500.4
+        aqimin = 400
+        aqimax = 500
+    case pm25 > 500.4:
+        pmmin = 500.4
+        pmmax = 650.4
+        aqimin = 500
+        aqimax = 600
     default:
-        return 300
+        return 999
     }
     aqi = uint16((float64(pm25) - pmmin)*(aqimax - aqimin)/(pmmax - pmmin)+aqimin)
     return
